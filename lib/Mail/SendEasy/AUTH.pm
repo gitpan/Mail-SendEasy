@@ -1,8 +1,8 @@
 #############################################################################
-## This file was generated automatically by Class::HPLOO/0.10
+## This file was generated automatically by Class::HPLOO/0.12
 ##
-## Original file:    AUTH.hploo
-## Generation date:  2004-01-25 00:47:17
+## Original file:    ./lib/Mail/SendEasy/AUTH.hploo
+## Generation date:  2004-04-09 04:49:29
 ##
 ## ** Do not change this file, use the original HPLOO source! **
 #############################################################################
@@ -22,17 +22,28 @@
 
 { package Mail::SendEasy::AUTH ;
 
-  use strict qw(vars) ;
+  use strict qw(vars) ; no warnings ;
+
+  my (%CLASS_HPLOO) ;
  
   sub new { 
     my $class = shift ;
     my $this = bless({} , $class) ;
+    no warnings ;
     my $undef = \'' ;
     sub UNDEF {$undef} ;
-    my $ret_this = defined &AUTH ? $this->AUTH(@_) : undef ;
-    $this = $ret_this if ( UNIVERSAL::isa($ret_this,$class) ) ;
-    $this = undef if ( $ret_this == $undef ) ;
-    return $this ;
+    if ( $CLASS_HPLOO{ATTR} ) {
+    foreach my $Key ( keys %{$CLASS_HPLOO{ATTR}} ) {
+    tie( $this->{$Key} => 'Class::HPLOO::TIESCALAR' , $CLASS_HPLOO{ATTR}{$Key}{tp} , $CLASS_HPLOO{ATTR}{$Key}{pr} , \$this->{CLASS_HPLOO_ATTR}{$Key} ) if !exists $this->{$Key} ;
+    } }  my $ret_this = defined &AUTH ? $this->AUTH(@_) : undef ;
+    if ( ref($ret_this) && UNIVERSAL::isa($ret_this,$class) ) {
+    $this = $ret_this ;
+    if ( $CLASS_HPLOO{ATTR} && UNIVERSAL::isa($this,'HASH') ) {
+    foreach my $Key ( keys %{$CLASS_HPLOO{ATTR}} ) {
+    tie( $this->{$Key} => 'Class::HPLOO::TIESCALAR' , $CLASS_HPLOO{ATTR}{$Key}{tp} , $CLASS_HPLOO{ATTR}{$Key}{pr} , \$this->{CLASS_HPLOO_ATTR}{$Key} ) if !exists $this->{$Key} ;
+    } } } elsif ( $ret_this == $undef ) {
+    $this = undef ;
+    }  return $this ;
   }
 
 
@@ -51,7 +62,7 @@
   }
   
   sub AUTH { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     my $user = shift(@_) ;
     my $pass = shift(@_) ;
     my @authtypes = @_ ;
@@ -72,10 +83,10 @@
     $this->{AUTHSUB} = $auth_sub ;
   }
   
-  sub type { my $this = shift ; $this->{AUTHSUB} }
+  sub type { my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ; $this->{AUTHSUB} }
   
   sub start { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     
     my $start = $this->{AUTHSUB} . "_start" ;
     return &$start($this , @_) if defined &$start ;
@@ -83,7 +94,7 @@
   }
   
   sub step { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     
     my $step = $this->{AUTHSUB} . "_step" ;
     return &$step($this , @_) if defined &$step ;
@@ -93,7 +104,7 @@
   #############
   
   sub PLAIN_start { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     
     my @parts = map { defined $this->{$_} ? $this->{$_} : ''} qw(USER USER PASS);
     return join("\0", @parts) ;
@@ -102,7 +113,7 @@
   #############
   
   sub LOGIN_step { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     my $string = shift(@_) ;
     
     $string =~ /password/i ? $this->{PASS} :
@@ -113,7 +124,7 @@
   #############
   
   sub CRAM_MD5_step { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     my $string = shift(@_) ;
     
     my ($user, $pass) = map { defined $this->{$_} ? $this->{$_} : '' } qw(USER PASS) ;

@@ -14,10 +14,11 @@ package Mail::SendEasy ;
 use 5.006 ;
 
 use strict qw(vars);
+no warnings ;
 
 use vars qw($VERSION @ISA) ;
 
-$VERSION = '1.1' ;
+$VERSION = '1.2' ;
 
 ###########
 # REQUIRE #
@@ -280,15 +281,15 @@ sub send {
     if ( !$SMTP->auth ) { return ;}
   }
   
-  if ( $SMTP->MAIL("FROM: <$mail{from}>") !~ /^2/ ) { $ER = "MAIL FROM error (". $SMTP->last_response_line .")!" ; $SMTP->close ; return ;}
+  if ( $SMTP->MAIL("FROM:<$mail{from}>") !~ /^2/ ) { $ER = "MAIL FROM error (". $SMTP->last_response_line .")!" ; $SMTP->close ; return ;}
   
   foreach my $to ( @{$mail{to}} ) {
-    if ( $SMTP->RCPT("TO: <$to>") !~ /^2/ ) { $ER = "RCPT error (". $SMTP->last_response_line .")!" ; $SMTP->close ; return ;}
+    if ( $SMTP->RCPT("TO:<$to>") !~ /^2/ ) { $ER = "RCPT error (". $SMTP->last_response_line .")!" ; $SMTP->close ; return ;}
   }
   
 
   foreach my $to ( @{$mail{cc}} ) {
-    if ( $SMTP->RCPT("TO: <$to>") !~ /^2/ ) { $ER = "RCPT error (". $SMTP->last_response_line .")!" ; $SMTP->close ; return ;}
+    if ( $SMTP->RCPT("TO:<$to>") !~ /^2/ ) { $ER = "RCPT error (". $SMTP->last_response_line .")!" ; $SMTP->close ; return ;}
   }
   
   if ( $SMTP->DATA =~ /^3/ ) {

@@ -1,8 +1,8 @@
 #############################################################################
-## This file was generated automatically by Class::HPLOO/0.10
+## This file was generated automatically by Class::HPLOO/0.12
 ##
 ## Original file:    ./lib/Mail/SendEasy/SMTP.hploo
-## Generation date:  2004-02-05 23:37:35
+## Generation date:  2004-04-09 04:49:29
 ##
 ## ** Do not change this file, use the original HPLOO source! **
 #############################################################################
@@ -22,17 +22,28 @@
 
 { package Mail::SendEasy::SMTP ;
 
-  use strict qw(vars) ;
+  use strict qw(vars) ; no warnings ;
+
+  my (%CLASS_HPLOO) ;
  
   sub new { 
     my $class = shift ;
     my $this = bless({} , $class) ;
+    no warnings ;
     my $undef = \'' ;
     sub UNDEF {$undef} ;
-    my $ret_this = defined &SMTP ? $this->SMTP(@_) : undef ;
-    $this = $ret_this if ( UNIVERSAL::isa($ret_this,$class) ) ;
-    $this = undef if ( $ret_this == $undef ) ;
-    return $this ;
+    if ( $CLASS_HPLOO{ATTR} ) {
+    foreach my $Key ( keys %{$CLASS_HPLOO{ATTR}} ) {
+    tie( $this->{$Key} => 'Class::HPLOO::TIESCALAR' , $CLASS_HPLOO{ATTR}{$Key}{tp} , $CLASS_HPLOO{ATTR}{$Key}{pr} , \$this->{CLASS_HPLOO_ATTR}{$Key} ) if !exists $this->{$Key} ;
+    } }  my $ret_this = defined &SMTP ? $this->SMTP(@_) : undef ;
+    if ( ref($ret_this) && UNIVERSAL::isa($ret_this,$class) ) {
+    $this = $ret_this ;
+    if ( $CLASS_HPLOO{ATTR} && UNIVERSAL::isa($this,'HASH') ) {
+    foreach my $Key ( keys %{$CLASS_HPLOO{ATTR}} ) {
+    tie( $this->{$Key} => 'Class::HPLOO::TIESCALAR' , $CLASS_HPLOO{ATTR}{$Key}{tp} , $CLASS_HPLOO{ATTR}{$Key}{pr} , \$this->{CLASS_HPLOO_ATTR}{$Key} ) if !exists $this->{$Key} ;
+    } } } elsif ( $ret_this == $undef ) {
+    $this = undef ;
+    }  return $this ;
   }
 
 
@@ -41,12 +52,14 @@
   
   use Mail::SendEasy::AUTH ;
   use Mail::SendEasy::Base64 ;
+  
+  no warnings ;
 
   use vars qw($VERSION) ;
   $VERSION = '0.01' ;
   
   sub SMTP { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     my  $host = shift(@_) ;
     my $port = shift(@_) ;
     my $timeout = shift(@_) ;
@@ -68,7 +81,7 @@
   }
 
   sub connect { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     my $n = shift(@_) ;
     
     my $sock = new IO::Socket::INET(
@@ -108,21 +121,21 @@
   }
   
   sub is_connected { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     
     return 1 if $this->{SOCKET} && $this->{SOCKET}->connected  ;
     return undef ;
   }
   
   sub auth_types { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     
     my @types = split(/\s+/s , $this->{INF}{AUTH}) ;
     return @types ;
   }
   
   sub auth { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     my $user = shift(@_) ;
     my $pass = shift(@_) ;
     my @types = @_ ;
@@ -157,19 +170,19 @@
     return undef ;
   }
   
-  sub EHLO { my $this = shift ; $this->cmd("EHLO",@_) ; $this->response ;}
-  sub AUTH { my $this = shift ; $this->cmd("AUTH",@_) ; $this->response ;}
+  sub EHLO { my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ; $this->cmd("EHLO",@_) ; $this->response ;}
+  sub AUTH { my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ; $this->cmd("AUTH",@_) ; $this->response ;}
   
-  sub MAIL { my $this = shift ; $this->cmd("MAIL",@_) ; $this->response ;}
-  sub RCPT { my $this = shift ; $this->cmd("RCPT",@_) ; $this->response ;}
+  sub MAIL { my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ; $this->cmd("MAIL",@_) ; $this->response ;}
+  sub RCPT { my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ; $this->cmd("RCPT",@_) ; $this->response ;}
 
-  sub DATA { my $this = shift ; $this->cmd("DATA") ; $this->response ;}
-  sub DATAEND { my $this = shift ; $this->cmd(".") ; $this->response ;}
+  sub DATA { my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ; $this->cmd("DATA") ; $this->response ;}
+  sub DATAEND { my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ; $this->cmd(".") ; $this->response ;}
   
-  sub QUIT { my $this = shift ; $this->cmd("QUIT") ; return wantarray ? [200,''] : 200 ;}
+  sub QUIT { my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ; $this->cmd("QUIT") ; return wantarray ? [200,''] : 200 ;}
   
   sub close { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     my $error = shift(@_) ;
     
     $this->warn($error) if $error ;
@@ -179,7 +192,7 @@
   }
   
   sub warn { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     my $error = shift(@_) ;
     
     return if !$error ;
@@ -188,7 +201,7 @@
   }
   
   sub print { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     my $data = shift(@_) ;
     
     $this->connect if !$this->is_connected ;
@@ -198,7 +211,7 @@
   }
 
   sub cmd { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     my @cmds = @_ ;
     @_ = () ;
     
@@ -213,7 +226,7 @@
   }
   
   sub response { 
-    my $this = shift ;
+    my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ;
     
     $this->connect if !$this->is_connected ;
     return if !$this->{SOCKET} ;
@@ -243,11 +256,11 @@
     return ;
   }
   
-  sub last_response { my $this = shift ; return wantarray ? @{$this->{LAST_RESPONSE}} : @{$this->{LAST_RESPONSE}}[0]->[0] } ;
+  sub last_response { my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ; return wantarray ? @{$this->{LAST_RESPONSE}} : @{$this->{LAST_RESPONSE}}[0]->[0] } ;
   
-  sub last_response_msg { my $this = shift ; @{$this->{LAST_RESPONSE}}[0]->[1] } ;
+  sub last_response_msg { my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ; @{$this->{LAST_RESPONSE}}[0]->[1] } ;
   
-  sub last_response_line { my $this = shift ; @{$this->{LAST_RESPONSE}}[0]->[0] . " " . @{$this->{LAST_RESPONSE}}[0]->[1] } ;
+  sub last_response_line { my $this = ref($_[0]) && UNIVERSAL::isa($_[0],'UNIVERSAL') ? shift : undef ; @{$this->{LAST_RESPONSE}}[0]->[0] . " " . @{$this->{LAST_RESPONSE}}[0]->[1] } ;
   
 
 }
@@ -275,11 +288,11 @@ It hasn't dependencies and supports authentication.
   
   if ( !$smtp->auth ) { warn($smtp->last_response_line) ;}
   
-  if ( $smtp->MAIL("FROM: <$mail{from}>") !~ /^2/ ) { warn($smtp->last_response_line) ;}
+  if ( $smtp->MAIL("FROM:<$mail{from}>") !~ /^2/ ) { warn($smtp->last_response_line) ;}
   
-  if ( $smtp->RCPT("TO: <$to>") !~ /^2/ ) { warn($smtp->last_response_line) ;}
+  if ( $smtp->RCPT("TO:<$to>") !~ /^2/ ) { warn($smtp->last_response_line) ;}
    
-  if ( $smtp->RCPT("TO: <$to>") !~ /^2/ ) { warn($smtp->last_response_line) ;}
+  if ( $smtp->RCPT("TO:<$to>") !~ /^2/ ) { warn($smtp->last_response_line) ;}
     
   if ( $smtp->DATA =~ /^3/ ) {
     $smtp->print("To: foo@foo") ;
