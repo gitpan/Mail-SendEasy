@@ -1,5 +1,10 @@
 Revision history for Perl extension Mail::SendEasy.
 
+1.1  2004-02-05
+     - Fixed recursivety/loop use of the object.
+     - Fixed auth() call for SMTP servers that doesn't have AUTH.
+
+
 1.0  2004-01-23 18:20:59
       - original version;
 

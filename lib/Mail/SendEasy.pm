@@ -17,7 +17,7 @@ use strict qw(vars);
 
 use vars qw($VERSION @ISA) ;
 
-$VERSION = '1.0' ;
+$VERSION = '1.1' ;
 
 ###########
 # REQUIRE #
@@ -67,9 +67,11 @@ sub new {
 ########
 
 sub send {
-  my $this = shift if UNIVERSAL::isa($_[0] , 'Mail::SendEasy') ;
+  my $this = UNIVERSAL::isa($_[0] , 'Mail::SendEasy') ? shift : undef ;
   
   my $SMTP = $this->{SMTP} ;
+  
+  $ER = undef ;
   
   my %mail ;
   
@@ -77,7 +79,7 @@ sub send {
     my $k = lc(shift @_) ;
     $k =~ s/_//gs ;
     $k =~ s/\W//gs ;
-    $k =~ s/s$// ;
+    $k =~ s/s$// if $k !~ /^(?:pass)$/ ;
     my $v = shift @_ ;
     if ( !ref($v) && $k !~ /^(?:msg|message|html|msghtml)$/ ) {
       $v =~ s/^\s+//gs ;
@@ -184,8 +186,8 @@ sub send {
   
   $mail{MIME}{From} = $mail{from} ;
   
-  if ( $mail{from_title} =~ /\S/s ) {
-    my $title = delete $mail{from_title} ;
+  if ( $mail{fromtitle} =~ /\S/s ) {
+    my $title = delete $mail{fromtitle} ;
     $title =~ s/[\r\n]+/ /gs ;
     $title =~ s/<.*?>//gs ;
     $title =~ s/^\s+//gs ;
@@ -274,7 +276,7 @@ sub send {
   
   ## SEND #####################
   
-  if ( $SMTP->{USER} ne '' || $SMTP->{PASS} ne '' ) {
+  if ( ($SMTP->{USER} ne '' || $SMTP->{PASS} ne '') && $SMTP->auth_types ) {
     if ( !$SMTP->auth ) { return ;}
   }
   
@@ -516,7 +518,7 @@ sub error { return( $ER ) ;}
 ########
 
 sub warn {
-  my $this = shift if UNIVERSAL::isa($_[0] , 'Mail::SendEasy') ;
+  my $this = UNIVERSAL::isa($_[0] , 'Mail::SendEasy') ? shift : undef ;
   $ER = $_[0] ;
 }
 
@@ -723,7 +725,7 @@ and if exist only one ANEX, the name will be the same of the ANEX, but with the 
 
 L<Mail::SendEasy::SMTP>, L<Mail::SendEasy::AUTH>, L<HPL>.
 
-B<This module was created to handler the e-mail system of L<HPL>.>
+B<This module was created to handle the e-mail system of L<HPL>.>
 
 =head1 AUTHOR
 

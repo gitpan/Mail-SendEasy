@@ -1,8 +1,8 @@
 #############################################################################
-## This file was generated automatically by Class::HPLOO/0.09
+## This file was generated automatically by Class::HPLOO/0.10
 ##
 ## Original file:    AUTH.hploo
-## Generation date:  2004-01-24 00:39:37
+## Generation date:  2004-01-25 00:47:17
 ##
 ## ** Do not change this file, use the original HPLOO source! **
 #############################################################################
@@ -29,7 +29,7 @@
     my $this = bless({} , $class) ;
     my $undef = \'' ;
     sub UNDEF {$undef} ;
-    my $ret_this = $this->AUTH(@_) if defined &AUTH ;
+    my $ret_this = defined &AUTH ? $this->AUTH(@_) : undef ;
     $this = $ret_this if ( UNIVERSAL::isa($ret_this,$class) ) ;
     $this = undef if ( $ret_this == $undef ) ;
     return $this ;

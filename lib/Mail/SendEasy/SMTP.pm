@@ -1,8 +1,8 @@
 #############################################################################
-## This file was generated automatically by Class::HPLOO/0.09
+## This file was generated automatically by Class::HPLOO/0.10
 ##
-## Original file:    SMTP.hploo
-## Generation date:  2004-01-24 00:39:50
+## Original file:    ./lib/Mail/SendEasy/SMTP.hploo
+## Generation date:  2004-02-05 23:37:35
 ##
 ## ** Do not change this file, use the original HPLOO source! **
 #############################################################################
@@ -29,7 +29,7 @@
     my $this = bless({} , $class) ;
     my $undef = \'' ;
     sub UNDEF {$undef} ;
-    my $ret_this = $this->SMTP(@_) if defined &SMTP ;
+    my $ret_this = defined &SMTP ? $this->SMTP(@_) : undef ;
     $this = $ret_this if ( UNIVERSAL::isa($ret_this,$class) ) ;
     $this = undef if ( $ret_this == $undef ) ;
     return $this ;
@@ -105,6 +105,13 @@
     }
     
     return 1 ;
+  }
+  
+  sub is_connected { 
+    my $this = shift ;
+    
+    return 1 if $this->{SOCKET} && $this->{SOCKET}->connected  ;
+    return undef ;
   }
   
   sub auth_types { 
@@ -184,6 +191,8 @@
     my $this = shift ;
     my $data = shift(@_) ;
     
+    $this->connect if !$this->is_connected ;
+    return if !$this->{SOCKET} ;
     my $sock = $this->{SOCKET} ;
     print $sock $data ;
   }
@@ -193,6 +202,7 @@
     my @cmds = @_ ;
     @_ = () ;
     
+    $this->connect if !$this->is_connected ;
     return if !$this->{SOCKET} ;
     my $sock = $this->{SOCKET} ;
     my $cmd = join(" ", @cmds) ;
@@ -205,6 +215,7 @@
   sub response { 
     my $this = shift ;
     
+    $this->connect if !$this->is_connected ;
     return if !$this->{SOCKET} ;
     local($/) ; $/ = "\n" ;
     my $sock = $this->{SOCKET} ;
